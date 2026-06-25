@@ -1,6 +1,3 @@
 name = "assinatura-partido-mjp"
-main = "src/index.ts"
+main = "dist/index.js"
 compatibility_date = "2026-06-25"
-
-# Removemos a seção de observabilidade para evitar o erro de validação (10021).
-# O Cloudflare Workers já coleta logs básicos automaticamente.
