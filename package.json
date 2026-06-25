@@ -1,5 +1,5 @@
 {
-  "name": "motor-eleitoral-seguro",
+  "name": "assinatura-partido-mjp",
   "version": "1.0.0",
   "devDependencies": {
     "@cloudflare/workers-types": "^4.20240117.0",
