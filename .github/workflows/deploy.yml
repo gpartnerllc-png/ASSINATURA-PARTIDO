@@ -16,6 +16,12 @@ jobs:
         with:
           node-version: '18'
           
+      - name: Instalar Dependências
+        run: npm install
+
+      - name: Compilar Código (Build)
+        run: npm run build
+        
       - name: Publicar na Cloudflare
         uses: cloudflare/wrangler-action@v3
         with:
