@@ -1,16 +1,10 @@
 - name: Publicar na Cloudflare
-        env:
-          # O Wrangler exige estas variáveis com estes nomes exatos
-          CLOUDFLARE_API_TOKEN: ${{ secrets.CF_API_TOKEN }}
-          CLOUDFLARE_ACCOUNT_ID: ${{ secrets.CF_ACCOUNT_ID }}
-        run: |
-          # Limpeza de segurança garantida
-          TOKEN=$(echo -n "$CLOUDFLARE_API_TOKEN" | tr -d '\n\r ')
-          ACCOUNT=$(echo -n "$CLOUDFLARE_ACCOUNT_ID" | tr -d '\n\r ')
-          
-          # Exporta para o ambiente do Wrangler usar
-          export CLOUDFLARE_API_TOKEN=$TOKEN
-          export CLOUDFLARE_ACCOUNT_ID=$ACCOUNT
-          
-          # Adiciona o parâmetro de conta para garantir que ele não se perca
-          npx wrangler deploy --name assinatura-partido-mjp --account-id $ACCOUNT
+  env:
+    CLOUDFLARE_API_TOKEN: ${{ secrets.CF_API_TOKEN }}
+    CLOUDFLARE_ACCOUNT_ID: ${{ secrets.CF_ACCOUNT_ID }}
+  run: |
+    # Força a remoção de caches antigos do wrangler antes de subir
+    rm -rf .wrangler
+
+    # Deploy forçado usando o ID da conta explicitamente
+    npx wrangler deploy --name assinatura-partido-mjp --account-id $CLOUDFLARE_ACCOUNT_ID
