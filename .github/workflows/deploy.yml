@@ -1,60 +1,16 @@
-name: Deploy Blindado Cloudflare Worker
-
-on:
-  push:
-    branches:
-      - main
-
-jobs:
-  deploy:
-    runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@v3
-      
-      - name: Instalar Node.js
-        uses: actions/setup-node@v3
-        with:
-          node-version: '20'
+- name: Publicar na Cloudflare
+        env:
+          # O Wrangler exige estas variáveis com estes nomes exatos
+          CLOUDFLARE_API_TOKEN: ${{ secrets.CF_API_TOKEN }}
+          CLOUDFLARE_ACCOUNT_ID: ${{ secrets.CF_ACCOUNT_ID }}
+        run: |
+          # Limpeza de segurança garantida
+          TOKEN=$(echo -n "$CLOUDFLARE_API_TOKEN" | tr -d '\n\r ')
+          ACCOUNT=$(echo -n "$CLOUDFLARE_ACCOUNT_ID" | tr -d '\n\r ')
           
-      - name: Instalar Dependências
-        run: npm install
-
-      - name: Compilar Código (Build)
-        run: npm run build
-        
-      - name: Validar Segredos e Token Cloudflare
-        env:
-          CLOUDFLARE_API_TOKEN: ${{ secrets.CF_API_TOKEN }}
-          CLOUDFLARE_ACCOUNT_ID: ${{ secrets.CF_ACCOUNT_ID }}
-        run: |
-          # Remove automaticamente espaços e enters invisíveis copiados por acidente
-          CLEAN_TOKEN=$(echo -n "$CLOUDFLARE_API_TOKEN" | tr -d '\n\r ')
-          CLEAN_ACCOUNT=$(echo -n "$CLOUDFLARE_ACCOUNT_ID" | tr -d '\n\r ')
-
-          if [ -z "$CLEAN_TOKEN" ]; then
-            echo "ERRO: O segredo CF_API_TOKEN está vazio"
-            exit 1
-          fi
-
-          echo "Testando o token contra a conta $CLEAN_ACCOUNT..."
-          STATUS=$(curl -s -o /tmp/cf_test.json -w "%{http_code}" \
-            -X GET "https://api.cloudflare.com/client/v4/accounts/$CLEAN_ACCOUNT/workers/services" \
-            -H "Authorization: Bearer $CLEAN_TOKEN" \
-            -H "Content-Type: application/json")
-
-          if [ "$STATUS" -ne 200 ]; then
-            echo "A API da Cloudflare retornou o código HTTP $STATUS. Resposta:"
-            cat /tmp/cf_test.json
-            exit 1
-          fi
-          echo "Token da Cloudflare validado com sucesso!"
-
-      - name: Publicar na Cloudflare
-        env:
-          CLOUDFLARE_API_TOKEN: ${{ secrets.CF_API_TOKEN }}
-          CLOUDFLARE_ACCOUNT_ID: ${{ secrets.CF_ACCOUNT_ID }}
-        run: |
-          # Limpeza de segurança também no deploy
-          export CLOUDFLARE_API_TOKEN=$(echo -n "$CLOUDFLARE_API_TOKEN" | tr -d '\n\r ')
-          export CLOUDFLARE_ACCOUNT_ID=$(echo -n "$CLOUDFLARE_ACCOUNT_ID" | tr -d '\n\r ')
-          npx wrangler deploy --name assinatura-partido-mjp
+          # Exporta para o ambiente do Wrangler usar
+          export CLOUDFLARE_API_TOKEN=$TOKEN
+          export CLOUDFLARE_ACCOUNT_ID=$ACCOUNT
+          
+          # Adiciona o parâmetro de conta para garantir que ele não se perca
+          npx wrangler deploy --name assinatura-partido-mjp --account-id $ACCOUNT
