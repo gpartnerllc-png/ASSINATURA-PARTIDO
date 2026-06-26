@@ -1,4 +1,4 @@
 name = "assinatura-partido-mjp"
-account_id = "SEU_ACCOUNT_ID_AQUI"
+account_id = "533aa092c7f3571e13fdc103ba716bdf"
 # type = "javascript"   # ou "webpack"/"rust" conforme seu projeto
 # workers_dev = false    # ou true se quiser usar workers.dev
