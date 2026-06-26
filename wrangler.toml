@@ -1,3 +1,2 @@
-name = "assinatura-partido-mjp"
-main = "dist/index.js"
-compatibility_date = "2026-06-25"
+name = "assinatura-partido-mjp"  # Must match your Cloudflare Workers service name
+account_id = "YOUR_ACCOUNT_ID"
