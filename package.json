@@ -2,13 +2,12 @@
   "name": "assinatura-partido-mjp",
   "version": "1.0.0",
   "scripts": {
-    "build": "esbuild src/index.ts --bundle --platform=neutral --outfile=dist/index.js",
-    "deploy": "npm run build && wrangler deploy"
+    "build": "esbuild src/index.ts --bundle --platform=neutral --outfile=dist/index.js --format=esm"
   },
   "devDependencies": {
     "@cloudflare/workers-types": "^4.20240117.0",
     "typescript": "^5.0.0",
     "esbuild": "^0.20.0",
-    "wrangler": "^3.0.0"
+    "wrangler": "^3.114.17"
   }
 }
