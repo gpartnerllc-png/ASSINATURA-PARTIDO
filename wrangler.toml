@@ -1,7 +1,4 @@
 name = "assinatura-partido-mjp"
-main = "dist/index.js"
-compatibility_date = "2026-06-25"
-workers_dev = true
-
-[build]
-command = "npm run build"
+account_id = "SEU_ACCOUNT_ID_AQUI"
+# type = "javascript"   # ou "webpack"/"rust" conforme seu projeto
+# workers_dev = false    # ou true se quiser usar workers.dev
