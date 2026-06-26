@@ -1,11 +1,7 @@
+name = "assinatura-partido-mjp"
 main = "dist/index.js"
 compatibility_date = "2026-06-25"
 workers_dev = true
 
-# ADICIONE ISTO:
 [build]
 command = "npm run build"
-name = "assinatura-partido-mjp"
-main = "dist/index.js"
-compatibility_date = "2026-06-25"
-account_id = "533aa092c7f3571e13fdc103ba716bdf"
