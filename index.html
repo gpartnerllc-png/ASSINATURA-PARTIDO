@@ -1,1 +1,93 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>MJP - Brasil Evoluído</title>
+    <style>
+        body { margin: 0; padding: 0; font-family: 'Segoe UI', sans-serif; background: linear-gradient(135deg, #009b3a 0%, #fedf00 50%, #002776 100%); min-height: 100vh; display: flex; align-items: center; justify-content: center; color: white; }
+        .container { background: rgba(0, 0, 0, 0.7); padding: 40px; border-radius: 20px; box-shadow: 0 10px 30px rgba(0,0,0,0.5); width: 90%; max-width: 450px; text-align: center; backdrop-filter: blur(10px); }
+        h1 { margin-bottom: 20px; text-transform: uppercase; letter-spacing: 2px; color: #fedf00; }
+        input { width: 100%; padding: 15px; margin: 10px 0; border: none; border-radius: 8px; box-sizing: border-box; color: #333; }
+        button { width: 100%; padding: 15px; background: #009b3a; color: white; border: none; border-radius: 8px; font-weight: bold; cursor: pointer; transition: 0.3s; margin-top: 10px; }
+        button:hover { background: #007a2e; }
+        #btn-camera { background: #333; border: 1px solid #fedf00; color: white; }
+        .mensagem { margin-top: 15px; padding: 12px; border-radius: 8px; display: none; }
+        .sucesso { background: rgba(0, 155, 58, 0.2); border: 1px solid #009b3a; display: block; color: #90EE90; }
+        .erro { background: rgba(255, 100, 100, 0.2); border: 1px solid #ff6464; display: block; color: #ff9999; }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Partido MJP</h1>
+        <p>Assine pelo Brasil Evoluído</p>
+        
+        <form id="assinaturaForm">
+            <input type="text" id="nome" placeholder="Nome Completo" required>
+            <input type="email" id="email" placeholder="E-mail" required>
+            
+            <button type="button" id="btn-camera">📷 Digitalizar Título (IA)</button>
+            <input type="file" id="file-input" accept="image/*" capture="environment" style="display:none">
+            <div id="status-ia" style="font-size: 12px; margin: 5px 0; color: #fedf00;"></div>
+            
+            <button type="submit" id="btn-submit">VALIDAR ASSINATURA</button>
+            <div class="mensagem" id="mensagem"></div>
+        </form>
+    </div>
 
+    <script>
+        const form = document.getElementById('assinaturaForm');
+        const startTime = performance.now(); // Blindagem anti-bot
+
+        // Digitalização via IA
+        document.getElementById('btn-camera').addEventListener('click', () => document.getElementById('file-input').click());
+        document.getElementById('file-input').addEventListener('change', async (e) => {
+            const file = e.target.files[0];
+            if (!file) return;
+            const formData = new FormData();
+            formData.append('image', file);
+            document.getElementById('status-ia').innerText = "Processando com IA...";
+            
+            const res = await fetch('/api/ocr', { method: 'POST', body: formData });
+            const data = await res.json();
+            if (data.nome) {
+                document.getElementById('nome').value = data.nome;
+                document.getElementById('status-ia').innerText = "Dados extraídos!";
+            }
+        });
+
+        // Envio Blindado
+        form.addEventListener('submit', async (e) => {
+            e.preventDefault();
+            
+            // Blindagem anti-bot (tempo mínimo de 2 segundos)
+            if (performance.now() - startTime < 2000) {
+                document.getElementById('mensagem').textContent = "❌ Validação de segurança em curso...";
+                document.getElementById('mensagem').className = "mensagem erro";
+                return;
+            }
+
+            const dados = {
+                nome: document.getElementById('nome').value,
+                email: document.getElementById('email').value,
+                timestamp: new Date().toISOString()
+            };
+
+            const resp = await fetch('/api/assinar', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify(dados)
+            });
+
+            if (resp.ok) {
+                document.getElementById('mensagem').textContent = "✅ Assinatura registrada!";
+                document.getElementById('mensagem').className = "mensagem sucesso";
+                form.reset();
+            } else {
+                document.getElementById('mensagem').textContent = "❌ Erro ao validar.";
+                document.getElementById('mensagem').className = "mensagem erro";
+            }
+        });
+    </script>
+</body>
+</html>
