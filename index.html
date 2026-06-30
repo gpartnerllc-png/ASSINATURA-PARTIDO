@@ -1,93 +1,1045 @@
 <!DOCTYPE html>
-<html lang="pt-br">
+<html lang="pt-BR">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>MJP - Brasil Evoluído</title>
+    <title>MJP - Movimento Jovens na Política | Brasil Evoluído</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;600;700;800;900&family=Open+Sans:wght@400;500;600&display=swap" rel="stylesheet">
     <style>
-        body { margin: 0; padding: 0; font-family: 'Segoe UI', sans-serif; background: linear-gradient(135deg, #009b3a 0%, #fedf00 50%, #002776 100%); min-height: 100vh; display: flex; align-items: center; justify-content: center; color: white; }
-        .container { background: rgba(0, 0, 0, 0.7); padding: 40px; border-radius: 20px; box-shadow: 0 10px 30px rgba(0,0,0,0.5); width: 90%; max-width: 450px; text-align: center; backdrop-filter: blur(10px); }
-        h1 { margin-bottom: 20px; text-transform: uppercase; letter-spacing: 2px; color: #fedf00; }
-        input { width: 100%; padding: 15px; margin: 10px 0; border: none; border-radius: 8px; box-sizing: border-box; color: #333; }
-        button { width: 100%; padding: 15px; background: #009b3a; color: white; border: none; border-radius: 8px; font-weight: bold; cursor: pointer; transition: 0.3s; margin-top: 10px; }
-        button:hover { background: #007a2e; }
-        #btn-camera { background: #333; border: 1px solid #fedf00; color: white; }
-        .mensagem { margin-top: 15px; padding: 12px; border-radius: 8px; display: none; }
-        .sucesso { background: rgba(0, 155, 58, 0.2); border: 1px solid #009b3a; display: block; color: #90EE90; }
-        .erro { background: rgba(255, 100, 100, 0.2); border: 1px solid #ff6464; display: block; color: #ff9999; }
+        *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
+        html { scroll-behavior: smooth; }
+
+        body {
+            font-family: 'Open Sans', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+            min-height: 100vh;
+            overflow-x: hidden;
+            color: #fff;
+        }
+
+        /* ============================
+           FUNDO BANDEIRA DO BRASIL
+           ============================ */
+        .bg-flag {
+            position: fixed;
+            inset: 0;
+            z-index: 0;
+            overflow: hidden;
+        }
+
+        .bg-green {
+            position: absolute;
+            inset: 0;
+            background: linear-gradient(170deg, #006B2D 0%, #009B3A 40%, #00A844 100%);
+        }
+
+        .bg-diamond {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            width: 88vmax;
+            height: 52vmax;
+            background: linear-gradient(135deg, #FEDF00 0%, #FFC800 100%);
+            transform: translate(-50%, -50%) rotate(45deg);
+            animation: diamondPulse 10s ease-in-out infinite;
+        }
+
+        @keyframes diamondPulse {
+            0%, 100% { transform: translate(-50%, -50%) rotate(45deg) scale(1); opacity: 0.95; }
+            50% { transform: translate(-50%, -50%) rotate(45deg) scale(1.03); opacity: 1; }
+        }
+
+        .bg-globe {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            width: 34vmax;
+            height: 34vmax;
+            background: radial-gradient(circle at 38% 38%, #003DA5 0%, #002776 50%, #001B5E 100%);
+            border-radius: 50%;
+            transform: translate(-50%, -50%);
+            box-shadow: inset 0 0 80px rgba(0,0,0,0.35), 0 0 60px rgba(0,39,118,0.3);
+        }
+
+        .bg-band {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            width: 38vmax;
+            height: 2.2vmax;
+            background: rgba(255, 255, 255, 0.12);
+            transform: translate(-50%, -50%) rotate(-12deg);
+            border-radius: 100%;
+        }
+
+        .stars-container {
+            position: absolute;
+            inset: 0;
+            pointer-events: none;
+        }
+
+        .star {
+            position: absolute;
+            color: rgba(255, 255, 255, 0.85);
+            animation: twinkle var(--dur) ease-in-out infinite;
+            animation-delay: var(--del);
+            text-shadow: 0 0 6px rgba(255,255,255,0.5);
+        }
+
+        @keyframes twinkle {
+            0%, 100% { opacity: 0.15; transform: scale(0.7); }
+            50% { opacity: 1; transform: scale(1.15); }
+        }
+
+        .bg-overlay {
+            position: absolute;
+            inset: 0;
+            background: radial-gradient(ellipse at center, transparent 20%, rgba(0,0,0,0.45) 100%);
+        }
+
+        /* Partículas flutuantes */
+        .particles {
+            position: absolute;
+            inset: 0;
+            pointer-events: none;
+        }
+
+        .particle {
+            position: absolute;
+            width: 4px;
+            height: 4px;
+            background: rgba(254,223,0,0.4);
+            border-radius: 50%;
+            animation: floatUp var(--speed) linear infinite;
+            animation-delay: var(--delay);
+        }
+
+        @keyframes floatUp {
+            0% { transform: translateY(100vh) scale(0); opacity: 0; }
+            10% { opacity: 1; }
+            90% { opacity: 1; }
+            100% { transform: translateY(-10vh) scale(1); opacity: 0; }
+        }
+
+        /* ============================
+           LAYOUT PRINCIPAL
+           ============================ */
+        .main {
+            position: relative;
+            z-index: 1;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            padding: 30px 16px 60px;
+        }
+
+        /* ============================
+           CABEÇALHO
+           ============================ */
+        .header {
+            text-align: center;
+            margin-bottom: 28px;
+            animation: fadeDown 0.9s cubic-bezier(0.22,1,0.36,1);
+        }
+
+        @keyframes fadeDown {
+            from { opacity: 0; transform: translateY(-40px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .shield {
+            width: 72px;
+            height: 72px;
+            margin: 0 auto 14px;
+            background: linear-gradient(135deg, #009B3A 0%, #FEDF00 50%, #002776 100%);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            box-shadow: 0 4px 25px rgba(0,0,0,0.3);
+            font-size: 32px;
+        }
+
+        .logo {
+            font-family: 'Montserrat', sans-serif;
+            font-size: clamp(2.2rem, 6vw, 3.8rem);
+            font-weight: 900;
+            letter-spacing: 5px;
+            background: linear-gradient(135deg, #FEDF00 0%, #fff 40%, #FEDF00 80%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            text-shadow: none;
+            filter: drop-shadow(0 3px 12px rgba(0,0,0,0.4));
+        }
+
+        .tagline {
+            font-family: 'Montserrat', sans-serif;
+            font-size: clamp(0.85rem, 2.2vw, 1.15rem);
+            font-weight: 600;
+            letter-spacing: 8px;
+            text-transform: uppercase;
+            color: rgba(255,255,255,0.92);
+            margin-top: 6px;
+            text-shadow: 0 2px 10px rgba(0,0,0,0.4);
+        }
+
+        .divider {
+            width: 90px;
+            height: 3px;
+            background: linear-gradient(90deg, transparent, #FEDF00, #009B3A, transparent);
+            margin: 16px auto 0;
+            border-radius: 2px;
+        }
+
+        /* ============================
+           CARTÃO PRINCIPAL
+           ============================ */
+        .card {
+            background: rgba(0, 8, 24, 0.82);
+            backdrop-filter: blur(30px);
+            -webkit-backdrop-filter: blur(30px);
+            border: 1px solid rgba(255,255,255,0.1);
+            border-radius: 24px;
+            padding: clamp(24px, 5vw, 45px);
+            width: 100%;
+            max-width: 540px;
+            box-shadow:
+                0 30px 80px rgba(0,0,0,0.45),
+                inset 0 1px 0 rgba(255,255,255,0.06);
+            animation: fadeUp 0.9s cubic-bezier(0.22,1,0.36,1) 0.15s both;
+        }
+
+        @keyframes fadeUp {
+            from { opacity: 0; transform: translateY(40px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .card-title {
+            font-family: 'Montserrat', sans-serif;
+            font-size: clamp(1.05rem, 2.8vw, 1.35rem);
+            font-weight: 700;
+            text-align: center;
+            color: #FEDF00;
+            margin-bottom: 5px;
+        }
+
+        .card-subtitle {
+            text-align: center;
+            font-size: 0.88rem;
+            color: rgba(255,255,255,0.65);
+            margin-bottom: 28px;
+            line-height: 1.55;
+        }
+
+        /* ============================
+           FORMULÁRIO
+           ============================ */
+        .form-group {
+            margin-bottom: 18px;
+        }
+
+        .form-label {
+            display: block;
+            font-size: 0.8rem;
+            font-weight: 600;
+            color: rgba(255,255,255,0.82);
+            margin-bottom: 7px;
+            letter-spacing: 0.4px;
+        }
+
+        .form-input,
+        .form-select {
+            width: 100%;
+            padding: 14px 16px;
+            background: rgba(255,255,255,0.07);
+            border: 1.5px solid rgba(255,255,255,0.13);
+            border-radius: 12px;
+            color: #fff;
+            font-size: 15px;
+            font-family: inherit;
+            transition: all 0.3s ease;
+        }
+
+        .form-input::placeholder { color: rgba(255,255,255,0.3); }
+
+        .form-input:focus,
+        .form-select:focus {
+            outline: none;
+            border-color: #FEDF00;
+            background: rgba(255,255,255,0.11);
+            box-shadow: 0 0 0 3px rgba(254,223,0,0.12);
+        }
+
+        .form-input.invalid {
+            border-color: #FF5252;
+            box-shadow: 0 0 0 3px rgba(255,82,82,0.12);
+        }
+
+        .form-select {
+            appearance: none;
+            -webkit-appearance: none;
+            background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='8'%3E%3Cpath d='M1 1l5 5 5-5' stroke='%23FEDF00' stroke-width='1.5' fill='none'/%3E%3C/svg%3E");
+            background-repeat: no-repeat;
+            background-position: right 16px center;
+            cursor: pointer;
+        }
+
+        .form-select option {
+            background: #0a1628;
+            color: #fff;
+            padding: 8px;
+        }
+
+        .form-row {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 14px;
+        }
+
+        .form-row-3 {
+            display: grid;
+            grid-template-columns: 1fr 1fr 1fr;
+            gap: 14px;
+        }
+
+        /* Checkbox */
+        .checkbox-group {
+            display: flex;
+            align-items: flex-start;
+            gap: 12px;
+            margin: 22px 0;
+            cursor: pointer;
+        }
+
+        .checkbox-group input[type="checkbox"] {
+            width: 22px;
+            height: 22px;
+            margin-top: 1px;
+            accent-color: #009B3A;
+            cursor: pointer;
+            flex-shrink: 0;
+            border-radius: 4px;
+        }
+
+        .checkbox-label {
+            font-size: 0.82rem;
+            color: rgba(255,255,255,0.72);
+            line-height: 1.5;
+            cursor: pointer;
+        }
+
+        /* Botão */
+        .btn-submit {
+            width: 100%;
+            padding: 17px;
+            background: linear-gradient(135deg, #009B3A 0%, #00C853 100%);
+            color: #fff;
+            font-family: 'Montserrat', sans-serif;
+            font-size: 1rem;
+            font-weight: 700;
+            letter-spacing: 2px;
+            text-transform: uppercase;
+            border: none;
+            border-radius: 14px;
+            cursor: pointer;
+            transition: all 0.35s ease;
+            box-shadow: 0 6px 24px rgba(0,155,58,0.35);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .btn-submit::before {
+            content: '';
+            position: absolute;
+            inset: 0;
+            background: linear-gradient(135deg, transparent 30%, rgba(255,255,255,0.12) 50%, transparent 70%);
+            transform: translateX(-100%);
+            transition: transform 0.6s ease;
+        }
+
+        .btn-submit:hover:not(:disabled)::before {
+            transform: translateX(100%);
+        }
+
+        .btn-submit:hover:not(:disabled) {
+            transform: translateY(-3px);
+            box-shadow: 0 10px 35px rgba(0,155,58,0.5);
+            background: linear-gradient(135deg, #00B347 0%, #00E05A 100%);
+        }
+
+        .btn-submit:active:not(:disabled) {
+            transform: translateY(-1px);
+        }
+
+        .btn-submit:disabled {
+            opacity: 0.55;
+            cursor: not-allowed;
+            transform: none;
+        }
+
+        /* Mensagens */
+        .msg {
+            padding: 15px 18px;
+            border-radius: 12px;
+            font-size: 0.9rem;
+            margin-top: 18px;
+            display: none;
+            animation: fadeMsg 0.5s ease;
+            line-height: 1.5;
+        }
+
+        @keyframes fadeMsg {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .msg.success {
+            display: block;
+            background: rgba(0,155,58,0.12);
+            border: 1px solid rgba(0,200,83,0.35);
+            color: #69F0AE;
+        }
+
+        .msg.error {
+            display: block;
+            background: rgba(255,50,50,0.12);
+            border: 1px solid rgba(255,82,82,0.35);
+            color: #FF8A80;
+        }
+
+        /* Spinner */
+        .spinner {
+            display: inline-block;
+            width: 18px;
+            height: 18px;
+            border: 2.5px solid rgba(255,255,255,0.25);
+            border-top-color: #fff;
+            border-radius: 50%;
+            animation: spin 0.65s linear infinite;
+            margin-right: 10px;
+            vertical-align: middle;
+        }
+
+        @keyframes spin { to { transform: rotate(360deg); } }
+
+        /* Contador */
+        .counter-section {
+            text-align: center;
+            margin-top: 24px;
+            padding: 16px;
+            background: rgba(254,223,0,0.06);
+            border-radius: 14px;
+            border: 1px solid rgba(254,223,0,0.12);
+        }
+
+        .counter-number {
+            font-family: 'Montserrat', sans-serif;
+            font-size: 2rem;
+            font-weight: 800;
+            color: #FEDF00;
+            line-height: 1;
+        }
+
+        .counter-label {
+            font-size: 0.78rem;
+            color: rgba(255,255,255,0.5);
+            letter-spacing: 1.5px;
+            text-transform: uppercase;
+            margin-top: 4px;
+        }
+
+        .progress-bar {
+            width: 100%;
+            height: 6px;
+            background: rgba(255,255,255,0.08);
+            border-radius: 3px;
+            margin-top: 12px;
+            overflow: hidden;
+        }
+
+        .progress-fill {
+            height: 100%;
+            background: linear-gradient(90deg, #009B3A, #FEDF00);
+            border-radius: 3px;
+            transition: width 1s ease;
+            width: 0%;
+        }
+
+        .progress-text {
+            font-size: 0.7rem;
+            color: rgba(255,255,255,0.4);
+            margin-top: 6px;
+        }
+
+        /* Sucesso animação */
+        .success-overlay {
+            display: none;
+            position: fixed;
+            inset: 0;
+            z-index: 100;
+            background: rgba(0,0,0,0.7);
+            backdrop-filter: blur(8px);
+            align-items: center;
+            justify-content: center;
+            animation: fadeIn 0.4s ease;
+        }
+
+        .success-overlay.visible {
+            display: flex;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+
+        .success-box {
+            background: rgba(0,15,35,0.95);
+            border: 1px solid rgba(0,200,83,0.3);
+            border-radius: 24px;
+            padding: 45px 35px;
+            text-align: center;
+            max-width: 400px;
+            width: 90%;
+            animation: popIn 0.5s cubic-bezier(0.175,0.885,0.32,1.275);
+        }
+
+        @keyframes popIn {
+            from { transform: scale(0.7); opacity: 0; }
+            to { transform: scale(1); opacity: 1; }
+        }
+
+        .check-circle {
+            width: 80px;
+            height: 80px;
+            margin: 0 auto 20px;
+            background: linear-gradient(135deg, #009B3A, #00C853);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 40px;
+            box-shadow: 0 8px 30px rgba(0,155,58,0.4);
+            animation: checkPop 0.6s cubic-bezier(0.175,0.885,0.32,1.275) 0.3s both;
+        }
+
+        @keyframes checkPop {
+            from { transform: scale(0); }
+            to { transform: scale(1); }
+        }
+
+        .success-title {
+            font-family: 'Montserrat', sans-serif;
+            font-size: 1.3rem;
+            font-weight: 700;
+            color: #69F0AE;
+            margin-bottom: 10px;
+        }
+
+        .success-text {
+            font-size: 0.9rem;
+            color: rgba(255,255,255,0.7);
+            line-height: 1.6;
+            margin-bottom: 25px;
+        }
+
+        .btn-close-success {
+            padding: 12px 35px;
+            background: rgba(255,255,255,0.1);
+            border: 1px solid rgba(255,255,255,0.2);
+            color: #fff;
+            font-family: 'Montserrat', sans-serif;
+            font-size: 0.85rem;
+            font-weight: 600;
+            border-radius: 10px;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+
+        .btn-close-success:hover {
+            background: rgba(255,255,255,0.15);
+        }
+
+        /* Rodapé */
+        .footer {
+            margin-top: 30px;
+            text-align: center;
+            max-width: 540px;
+            animation: fadeUp 0.9s cubic-bezier(0.22,1,0.36,1) 0.3s both;
+        }
+
+        .footer p {
+            font-size: 0.73rem;
+            color: rgba(255,255,255,0.45);
+            line-height: 1.65;
+        }
+
+        .footer a {
+            color: #FEDF00;
+            text-decoration: none;
+            transition: color 0.2s;
+        }
+
+        .footer a:hover {
+            color: #fff;
+            text-decoration: underline;
+        }
+
+        .footer-brand {
+            margin-top: 12px;
+            font-family: 'Montserrat', sans-serif;
+            font-size: 0.7rem;
+            letter-spacing: 3px;
+            color: rgba(255,255,255,0.25);
+            text-transform: uppercase;
+        }
+
+        /* Responsivo */
+        @media (max-width: 500px) {
+            .form-row, .form-row-3 { grid-template-columns: 1fr; }
+            .card { border-radius: 18px; }
+            .shield { width: 60px; height: 60px; font-size: 26px; }
+        }
+
+        /* Scrollbar */
+        ::-webkit-scrollbar { width: 6px; }
+        ::-webkit-scrollbar-track { background: transparent; }
+        ::-webkit-scrollbar-thumb { background: rgba(255,255,255,0.15); border-radius: 3px; }
     </style>
 </head>
 <body>
-    <div class="container">
-        <h1>Partido MJP</h1>
-        <p>Assine pelo Brasil Evoluído</p>
-        
-        <form id="assinaturaForm">
-            <input type="text" id="nome" placeholder="Nome Completo" required>
-            <input type="email" id="email" placeholder="E-mail" required>
-            
-            <button type="button" id="btn-camera">📷 Digitalizar Título (IA)</button>
-            <input type="file" id="file-input" accept="image/*" capture="environment" style="display:none">
-            <div id="status-ia" style="font-size: 12px; margin: 5px 0; color: #fedf00;"></div>
-            
-            <button type="submit" id="btn-submit">VALIDAR ASSINATURA</button>
-            <div class="mensagem" id="mensagem"></div>
-        </form>
+
+    <!-- FUNDO BANDEIRA DO BRASIL -->
+    <div class="bg-flag">
+        <div class="bg-green"></div>
+        <div class="bg-diamond"></div>
+        <div class="bg-globe">
+            <div class="stars-container" id="starsContainer"></div>
+        </div>
+        <div class="bg-band"></div>
+        <div class="particles" id="particles"></div>
+        <div class="bg-overlay"></div>
+    </div>
+
+    <!-- CONTEÚDO PRINCIPAL -->
+    <main class="main">
+        <header class="header">
+            <div class="shield" aria-hidden="true">&#9733;</div>
+            <h1 class="logo">MJP</h1>
+            <p class="tagline">Movimento Jovens na Política</p>
+            <div class="divider"></div>
+        </header>
+
+        <section class="card">
+            <h2 class="card-title">Apoie a Criação do Partido</h2>
+            <p class="card-subtitle">
+                Preencha seus dados eleitorais para registrar seu voto de apoio
+                à criação do Partido MJP - Movimento Jovens na Política.
+            </p>
+
+            <form id="formApoio" autocomplete="on" novalidate>
+                <!-- Nome -->
+                <div class="form-group">
+                    <label class="form-label" for="nome">Nome Completo</label>
+                    <input type="text" class="form-input" id="nome" name="name"
+                           autocomplete="name" placeholder="Seu nome completo"
+                           required minlength="3" maxlength="120">
+                </div>
+
+                <!-- Email -->
+                <div class="form-group">
+                    <label class="form-label" for="email">E-mail</label>
+                    <input type="email" class="form-input" id="email" name="email"
+                           autocomplete="email" placeholder="seu@email.com" required>
+                </div>
+
+                <!-- Título de Eleitor -->
+                <div class="form-group">
+                    <label class="form-label" for="titulo">Número do Título de Eleitor</label>
+                    <input type="text" class="form-input" id="titulo" name="titulo"
+                           placeholder="0000 0000 0000" required inputmode="numeric">
+                </div>
+
+                <!-- Zona e Seção -->
+                <div class="form-row">
+                    <div class="form-group">
+                        <label class="form-label" for="zona">Zona Eleitoral</label>
+                        <input type="text" class="form-input" id="zona" name="zona"
+                               placeholder="Ex: 001" required inputmode="numeric">
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label" for="secao">Seção Eleitoral</label>
+                        <input type="text" class="form-input" id="secao" name="secao"
+                               placeholder="Ex: 0123" required inputmode="numeric">
+                    </div>
+                </div>
+
+                <!-- Estado -->
+                <div class="form-group">
+                    <label class="form-label" for="estado">Estado</label>
+                    <select class="form-select" id="estado" name="state" required>
+                        <option value="">Selecione seu estado</option>
+                        <option value="AC">Acre</option>
+                        <option value="AL">Alagoas</option>
+                        <option value="AP">Amapá</option>
+                        <option value="AM">Amazonas</option>
+                        <option value="BA">Bahia</option>
+                        <option value="CE">Ceará</option>
+                        <option value="DF">Distrito Federal</option>
+                        <option value="ES">Espírito Santo</option>
+                        <option value="GO">Goiás</option>
+                        <option value="MA">Maranhão</option>
+                        <option value="MT">Mato Grosso</option>
+                        <option value="MS">Mato Grosso do Sul</option>
+                        <option value="MG">Minas Gerais</option>
+                        <option value="PA">Pará</option>
+                        <option value="PB">Paraíba</option>
+                        <option value="PR">Paraná</option>
+                        <option value="PE">Pernambuco</option>
+                        <option value="PI">Piauí</option>
+                        <option value="RJ">Rio de Janeiro</option>
+                        <option value="RN">Rio Grande do Norte</option>
+                        <option value="RS">Rio Grande do Sul</option>
+                        <option value="RO">Rondônia</option>
+                        <option value="RR">Roraima</option>
+                        <option value="SC">Santa Catarina</option>
+                        <option value="SP">São Paulo</option>
+                        <option value="SE">Sergipe</option>
+                        <option value="TO">Tocantins</option>
+                    </select>
+                </div>
+
+                <!-- Município -->
+                <div class="form-group">
+                    <label class="form-label" for="municipio">Município</label>
+                    <input type="text" class="form-input" id="municipio" name="city"
+                           autocomplete="address-level2" placeholder="Sua cidade" required>
+                </div>
+
+                <!-- Aceite -->
+                <label class="checkbox-group">
+                    <input type="checkbox" id="aceite" required>
+                    <span class="checkbox-label">
+                        Declaro que apoio a criação do Partido MJP - Movimento Jovens na Política
+                        e autorizo o uso dos meus dados eleitorais exclusivamente para
+                        este fim, conforme a LGPD (Lei 13.709/2018).
+                    </span>
+                </label>
+
+                <!-- Botão -->
+                <button type="submit" class="btn-submit" id="btnSubmit">
+                    Registrar Meu Apoio
+                </button>
+
+                <!-- Mensagem inline -->
+                <div class="msg" id="msg"></div>
+            </form>
+
+            <!-- Contador -->
+            <div class="counter-section">
+                <div class="counter-number" id="counterNum">0</div>
+                <div class="counter-label">apoiadores registrados</div>
+                <div class="progress-bar">
+                    <div class="progress-fill" id="progressFill"></div>
+                </div>
+                <div class="progress-text" id="progressText">Meta: 500.000 apoiadores</div>
+            </div>
+        </section>
+
+        <!-- Rodapé -->
+        <footer class="footer">
+            <p>
+                O apoiamento oficial para criação de partidos políticos no Brasil é
+                realizado pelo
+                <a href="https://apoiepartido.tse.jus.br/" target="_blank" rel="noopener noreferrer">
+                    Tribunal Superior Eleitoral (TSE)</a>.
+                Este formulário registra seu interesse e apoio ao movimento MJP.
+            </p>
+            <p style="margin-top: 8px;">
+                Seus dados são tratados conforme a Lei Geral de Proteção de Dados
+                (Lei 13.709/2018) e armazenados de forma segura.
+                Nenhuma foto ou documento é coletado.
+            </p>
+            <p class="footer-brand">MJP - Movimento Jovens na Política</p>
+        </footer>
+    </main>
+
+    <!-- Overlay de sucesso -->
+    <div class="success-overlay" id="successOverlay">
+        <div class="success-box">
+            <div class="check-circle">&#10003;</div>
+            <h3 class="success-title">Apoio Registrado!</h3>
+            <p class="success-text">
+                Obrigado por apoiar a criação do Partido MJP - Movimento Jovens na Política.
+                Seu voto foi contabilizado com sucesso.
+            </p>
+            <button class="btn-close-success" id="btnCloseSuccess">Fechar</button>
+        </div>
     </div>
 
     <script>
-        const form = document.getElementById('assinaturaForm');
-        const startTime = performance.now(); // Blindagem anti-bot
+    (function() {
+        'use strict';
 
-        // Digitalização via IA
-        document.getElementById('btn-camera').addEventListener('click', () => document.getElementById('file-input').click());
-        document.getElementById('file-input').addEventListener('change', async (e) => {
-            const file = e.target.files[0];
-            if (!file) return;
-            const formData = new FormData();
-            formData.append('image', file);
-            document.getElementById('status-ia').innerText = "Processando com IA...";
-            
-            const res = await fetch('/api/ocr', { method: 'POST', body: formData });
-            const data = await res.json();
-            if (data.nome) {
-                document.getElementById('nome').value = data.nome;
-                document.getElementById('status-ia').innerText = "Dados extraídos!";
+        // ============================
+        // ESTRELAS NO GLOBO AZUL
+        // ============================
+        (function criarEstrelas() {
+            var container = document.getElementById('starsContainer');
+            if (!container) return;
+            for (var i = 0; i < 27; i++) {
+                var star = document.createElement('span');
+                star.innerHTML = '&#9733;';
+                star.className = 'star';
+                star.style.left = (Math.random() * 85 + 7) + '%';
+                star.style.top = (Math.random() * 85 + 7) + '%';
+                star.style.fontSize = (Math.random() * 8 + 5) + 'px';
+                star.style.setProperty('--dur', (Math.random() * 4 + 2) + 's');
+                star.style.setProperty('--del', (Math.random() * 4) + 's');
+                container.appendChild(star);
+            }
+        })();
+
+        // ============================
+        // PARTICULAS FLUTUANTES
+        // ============================
+        (function criarParticulas() {
+            var container = document.getElementById('particles');
+            if (!container) return;
+            for (var i = 0; i < 30; i++) {
+                var p = document.createElement('div');
+                p.className = 'particle';
+                p.style.left = Math.random() * 100 + '%';
+                p.style.setProperty('--speed', (Math.random() * 12 + 8) + 's');
+                p.style.setProperty('--delay', (Math.random() * 10) + 's');
+                p.style.width = (Math.random() * 4 + 2) + 'px';
+                p.style.height = p.style.width;
+                var cores = [
+                    'rgba(254,223,0,0.3)',
+                    'rgba(0,155,58,0.3)',
+                    'rgba(255,255,255,0.2)'
+                ];
+                p.style.background = cores[Math.floor(Math.random() * cores.length)];
+                container.appendChild(p);
+            }
+        })();
+
+        // ============================
+        // REFERÊNCIAS DO DOM
+        // ============================
+        var form = document.getElementById('formApoio');
+        var btn = document.getElementById('btnSubmit');
+        var msgDiv = document.getElementById('msg');
+        var successOverlay = document.getElementById('successOverlay');
+        var btnClose = document.getElementById('btnCloseSuccess');
+        var counterEl = document.getElementById('counterNum');
+        var progressFill = document.getElementById('progressFill');
+        var META = 500000;
+
+        // ============================
+        // UTILITÁRIOS
+        // ============================
+        function showMsg(text, type) {
+            msgDiv.textContent = text;
+            msgDiv.className = 'msg ' + type;
+        }
+
+        function clearMsg() {
+            msgDiv.className = 'msg';
+            msgDiv.textContent = '';
+        }
+
+        function validarEmail(email) {
+            return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email);
+        }
+
+        function animarContador(target) {
+            var current = parseInt(counterEl.textContent.replace(/\D/g, '')) || 0;
+            if (target <= current) {
+                counterEl.textContent = target.toLocaleString('pt-BR');
+                return;
+            }
+            var diff = target - current;
+            var steps = 50;
+            var inc = Math.ceil(diff / steps);
+            var timer = setInterval(function() {
+                current += inc;
+                if (current >= target) {
+                    current = target;
+                    clearInterval(timer);
+                }
+                counterEl.textContent = current.toLocaleString('pt-BR');
+            }, 25);
+            var pct = Math.min((target / META) * 100, 100);
+            progressFill.style.width = pct + '%';
+        }
+
+        // ============================
+        // MÁSCARAS DE INPUT
+        // ============================
+        document.getElementById('titulo').addEventListener('input', function(e) {
+            var v = e.target.value.replace(/\D/g, '');
+            if (v.length > 12) v = v.slice(0, 12);
+            e.target.value = v.replace(/(\d{4})(?=\d)/g, '$1 ');
+        });
+
+        ['zona', 'secao'].forEach(function(id) {
+            document.getElementById(id).addEventListener('input', function(e) {
+                e.target.value = e.target.value.replace(/\D/g, '').slice(0, 4);
+            });
+        });
+
+        // Limpar mensagens ao focar
+        form.querySelectorAll('input, select').forEach(function(el) {
+            el.addEventListener('focus', function() {
+                clearMsg();
+                el.classList.remove('invalid');
+            });
+        });
+
+        // ============================
+        // FECHAR OVERLAY DE SUCESSO
+        // ============================
+        btnClose.addEventListener('click', function() {
+            successOverlay.classList.remove('visible');
+        });
+
+        successOverlay.addEventListener('click', function(e) {
+            if (e.target === successOverlay) {
+                successOverlay.classList.remove('visible');
             }
         });
 
-        // Envio Blindado
-        form.addEventListener('submit', async (e) => {
+        // ============================
+        // ENVIO DO FORMULÁRIO
+        // ============================
+        form.addEventListener('submit', async function(e) {
             e.preventDefault();
-            
-            // Blindagem anti-bot (tempo mínimo de 2 segundos)
-            if (performance.now() - startTime < 2000) {
-                document.getElementById('mensagem').textContent = "❌ Validação de segurança em curso...";
-                document.getElementById('mensagem').className = "mensagem erro";
+            clearMsg();
+
+            var nome = document.getElementById('nome').value.trim();
+            var email = document.getElementById('email').value.trim();
+            var titulo = document.getElementById('titulo').value.replace(/\s/g, '');
+            var zona = document.getElementById('zona').value.trim();
+            var secao = document.getElementById('secao').value.trim();
+            var estado = document.getElementById('estado').value;
+            var municipio = document.getElementById('municipio').value.trim();
+            var aceite = document.getElementById('aceite').checked;
+
+            // Validações
+            if (nome.length < 3) {
+                showMsg('Nome deve ter no mínimo 3 caracteres.', 'error');
+                document.getElementById('nome').classList.add('invalid');
                 return;
             }
 
-            const dados = {
-                nome: document.getElementById('nome').value,
-                email: document.getElementById('email').value,
+            if (!validarEmail(email)) {
+                showMsg('E-mail inválido. Verifique e tente novamente.', 'error');
+                document.getElementById('email').classList.add('invalid');
+                return;
+            }
+
+            if (titulo.length < 12) {
+                showMsg('Número do título de eleitor inválido (12 dígitos).', 'error');
+                document.getElementById('titulo').classList.add('invalid');
+                return;
+            }
+
+            if (!zona) {
+                showMsg('Preencha a zona eleitoral.', 'error');
+                document.getElementById('zona').classList.add('invalid');
+                return;
+            }
+
+            if (!secao) {
+                showMsg('Preencha a seção eleitoral.', 'error');
+                document.getElementById('secao').classList.add('invalid');
+                return;
+            }
+
+            if (!estado) {
+                showMsg('Selecione seu estado.', 'error');
+                document.getElementById('estado').classList.add('invalid');
+                return;
+            }
+
+            if (!municipio) {
+                showMsg('Preencha o município.', 'error');
+                document.getElementById('municipio').classList.add('invalid');
+                return;
+            }
+
+            if (!aceite) {
+                showMsg('Você precisa declarar seu apoio para continuar.', 'error');
+                return;
+            }
+
+            var dados = {
+                nome: nome,
+                email: email,
+                titulo: titulo,
+                zona: zona,
+                secao: secao,
+                estado: estado,
+                municipio: municipio,
                 timestamp: new Date().toISOString()
             };
 
-            const resp = await fetch('/api/assinar', {
-                method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify(dados)
-            });
+            // Desabilitar botão
+            btn.disabled = true;
+            btn.innerHTML = '<span class="spinner"></span> Processando...';
 
-            if (resp.ok) {
-                document.getElementById('mensagem').textContent = "✅ Assinatura registrada!";
-                document.getElementById('mensagem').className = "mensagem sucesso";
-                form.reset();
-            } else {
-                document.getElementById('mensagem').textContent = "❌ Erro ao validar.";
-                document.getElementById('mensagem').className = "mensagem erro";
+            try {
+                var resp = await fetch('/api/votar', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(dados)
+                });
+
+                if (resp.ok) {
+                    var result = await resp.json().catch(function() { return {}; });
+                    form.reset();
+                    successOverlay.classList.add('visible');
+                    if (result.total) {
+                        animarContador(result.total);
+                    } else {
+                        var atual = parseInt(counterEl.textContent.replace(/\D/g, '')) || 0;
+                        animarContador(atual + 1);
+                    }
+                } else {
+                    var status = resp.status;
+                    if (status === 409) {
+                        showMsg('Este título de eleitor já foi registrado.', 'error');
+                    } else if (status === 429) {
+                        showMsg('Muitas tentativas. Aguarde um momento e tente novamente.', 'error');
+                    } else {
+                        showMsg('Erro ao registrar (código ' + status + '). Tente novamente.', 'error');
+                    }
+                }
+            } catch (err) {
+                showMsg('Erro de conexão. Verifique sua internet e tente novamente.', 'error');
+            } finally {
+                btn.disabled = false;
+                btn.textContent = 'Registrar Meu Apoio';
             }
         });
+
+        // ============================
+        // CARREGAR CONTADOR INICIAL
+        // ============================
+        (async function carregarContador() {
+            try {
+                var resp = await fetch('/api/votar/count');
+                if (resp.ok) {
+                    var data = await resp.json();
+                    if (data.total) animarContador(data.total);
+                }
+            } catch (e) { /* silencioso */ }
+        })();
+
+    })();
     </script>
 </body>
 </html>
