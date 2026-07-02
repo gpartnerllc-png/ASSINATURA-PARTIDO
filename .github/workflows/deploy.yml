@@ -12,24 +12,24 @@ jobs:
     runs-on: ubuntu-latest
     name: Deploy
     steps:
-      - name: 📥 Checkout do código
+      - name: Checkout do código
         uses: actions/checkout@v4
 
-      - name: ⚙️ Setup Node.js
+      - name: Setup Node.js
         uses: actions/setup-node@v4
         with:
           node-version: '20' # Versão LTS mais recente e recomendada para o Wrangler
           cache: 'npm'       # Habilita cache automático do npm para acelerar a pipeline
 
-      - name: 📦 Instalar dependências
+      - name: Instalar dependências
         run: npm ci
 
-      - name: 🛠️ Build
+      - name: Build
         run: npm run build
         # Nota: Só mantenha essa etapa se o seu package.json realmente possuir
         # um script "build" que precise rodar ANTES do wrangler assumir.
 
-      - name: 🚀 Publicar na Cloudflare
+      - name: Publicar na Cloudflare
         uses: cloudflare/wrangler-action@v3
         with:
           apiToken: ${{ secrets.CF_API_TOKEN }}
