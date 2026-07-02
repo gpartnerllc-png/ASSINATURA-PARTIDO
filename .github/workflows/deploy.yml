@@ -22,7 +22,7 @@ jobs:
           cache: 'npm'       # Habilita cache automático do npm para acelerar a pipeline
 
       - name: Instalar dependências
-        run: npm ci
+        run: npm install
 
       - name: Build
         run: npm run build
