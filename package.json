@@ -2,12 +2,10 @@
   "name": "mjp-droppfy",
   "version": "1.0.0",
   "private": true,
-  "description": "Capitador de apoio para criação do partido MJP - Movimento Jovens na Política (Cloudflare Pages + Functions + D1)",
   "scripts": {
     "dev": "npx wrangler pages dev .",
-    "build": "echo 'Nenhum build necessario'",
-    "deploy": "npx wrangler pages deploy . --project-name mjp-droppfy",
-    "db:apply": "npx wrangler d1 execute mjp --file=./migrations/0001_init.sql"
+    "build": "echo 'Build skipped'",
+    "deploy": "npx wrangler pages deploy . --project-name mjp-droppfy"
   },
   "devDependencies": {
     "wrangler": "^3.90.0"
