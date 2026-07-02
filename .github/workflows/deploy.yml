@@ -4,33 +4,35 @@ on:
   push:
     branches:
       - main
+  # Permite que você acione o deploy manualmente pela aba "Actions" do GitHub
+  workflow_dispatch: 
 
 jobs:
   deploy:
     runs-on: ubuntu-latest
+    name: Deploy
     steps:
-      - name: Checkout
+      - name: 📥 Checkout do código
         uses: actions/checkout@v4
 
-      - name: Setup Node
+      - name: ⚙️ Setup Node.js
         uses: actions/setup-node@v4
         with:
-          node-version: '18'
+          node-version: '20' # Versão LTS mais recente e recomendada para o Wrangler
+          cache: 'npm'       # Habilita cache automático do npm para acelerar a pipeline
 
-      - name: Install dependencies
+      - name: 📦 Instalar dependências
         run: npm ci
 
-      - name: Build
+      - name: 🛠️ Build
         run: npm run build
-        # ajuste para o script real do seu package.json (por ex. "build")
+        # Nota: Só mantenha essa etapa se o seu package.json realmente possuir
+        # um script "build" que precise rodar ANTES do wrangler assumir.
 
-      - name: Publicar na Cloudflare
-        env:
-          CLOUDFLARE_API_TOKEN: ${{ secrets.CF_API_TOKEN }}
-          CLOUDFLARE_ACCOUNT_ID: ${{ secrets.CF_ACCOUNT_ID }}
-        run: |
-          # Remove pastas de cache para garantir que nada antigo interfira
-          rm -rf .wrangler
-
-          # Executa o deploy garantindo que o Wrangler utilize o token e o ID de conta
-          npx wrangler deploy --name assinatura-partido-mjp --account-id $CLOUDFLARE_ACCOUNT_ID
+      - name: 🚀 Publicar na Cloudflare
+        uses: cloudflare/wrangler-action@v3
+        with:
+          apiToken: ${{ secrets.CF_API_TOKEN }}
+          accountId: ${{ secrets.CF_ACCOUNT_ID }}
+          # O comando deploy nativo da action. 
+          command: deploy --name assinatura-partido-mjp
