@@ -2,5 +2,5 @@
   "dev": "npx wrangler pages dev .",
   "build": "echo 'Nenhum build necessario'", 
   "deploy": "npx wrangler pages deploy . --project-name mjp-droppfy",
-  "db:apply": "npx wrangler d1 execute mjp-apoiadores --file=./migrations/0001_init.sql"
+  "db:apply": "npx wrangler d1 execute mjp --file=./migrations/0001_init.sql"
 }
