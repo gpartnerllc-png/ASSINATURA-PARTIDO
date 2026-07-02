@@ -1,13 +1,1 @@
-{
-  "name": "mjp-droppfy",
-  "version": "1.0.0",
-  "private": true,
-  "scripts": {
-    "dev": "npx wrangler pages dev .",
-    "build": "echo 'Build skipped'",
-    "deploy": "npx wrangler pages deploy . --project-name mjp-droppfy"
-  },
-  "devDependencies": {
-    "wrangler": "^3.90.0"
-  }
-}
+
