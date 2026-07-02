@@ -1,16 +1,4 @@
-{
-  "$schema": "node_modules/wrangler/config-schema.json",
-  "name": "mjp-droppfy",
-  "compatibility_date": "2025-01-01",
-  "pages_build_output_dir": ".",
-  "vars": {
-    "ALLOWED_ORIGIN": "https://mjp.droppfy.com"
-  },
-  "d1_databases": [
-    {
-      "binding": "DB",
-      "database_name": "mjp-apoiadores",
-      "database_id": "f452e85e-2a06-4fe5-aa21-f19184773a3e"
-    }
-  ]
-}
+[[d1_databases]]
+binding = "DB"
+database_name = "mjp"
+database_id = "f452e85e-2a06-4fe5-aa21-f19184773a3e"
